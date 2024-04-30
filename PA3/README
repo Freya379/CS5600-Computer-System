@@ -1,0 +1,130 @@
+# Team member:
+* Shuiming Chen
+* Yaohui Wang
+* Yu Ma
+* Zhixuan Shen
+
+
+# Description of the data structure:
+* using two arrays to store the threads and the unique numbers of people
+
+
+# Pseudo-code for the solution:
+
+### Variables Definition:
+```c
+Define `ROOM_CAPACITY` as 3
+Define `GENDER_LIMIT` as 2
+Define `DELAY` as 5
+
+Initialize `room_mutex` as a `pthread_mutex_t`
+Initialize `men_cond` as a `pthread_cond_t`
+Initialize `women_cond` as a `pthread_cond_t`
+
+Integer `num_men` initialized to 0
+Integer `num_women` initialized to 0
+Integer `waiting_men` initialized to 0
+Integer `waiting_women` initialized to 0,
+Integer `departure_index` initialized to 0
+```
+
+### Function Definitions:
+
+#### Arrive(id, gender):
+```c
+Lock room_mutex
+If gender is male:
+    Increment waiting_men
+Else:
+    Increment waiting_women
+
+While (conditions for entering the restroom are not met):
+    If gender is male:
+        Print "Man id waiting to enter..."
+        Wait on men_cond with room_mutex
+    Else:
+        Print "Woman id waiting to enter..."
+        Wait on women_cond with room_mutex
+
+If gender is male:
+    Increment num_men
+    Decrement waiting_men
+    Print "Man id entered the restroom."
+Else:
+    Increment num_women
+    Decrement waiting_women
+    Print "Woman id entered the restroom."
+
+Unlock room_mutex
+```
+
+#### UseFacilities(id, gender, time):
+```c
+Print "Restroom status and Waiting line info"
+Sleep for some time to imitate spend time in restroom
+Print "Person info that has used the facilities."
+```
+
+#### Depart(id, gender):
+```c
+Lock room_mutex
+    If gender is male:
+        Decrement num_men
+        If waiting_women is greater than 0:
+            signal to release the Wait on women_cond with room_mutex
+        Else:
+            signal to release the Wait on men_cond with room_mutex
+    Else:
+        Decrement num_women
+        If waiting_men is greater than 0:
+            signal to release the Wait on men_cond with room_mutex
+        Else:
+            signal to release the Wait on women_cond with room_mutex
+
+Increment departure_index
+Print "Departure infomation"
+Unlock room_mutex
+```
+
+#### OnePerson(arg):
+```c
+Extract id from arg
+Free memory allocated for arg
+
+Generate random gender (male or female)
+Set time to DELAY to imitate the time spend in restroom
+
+Call Arrive(id, gender)
+Call UseFacilities(id, gender, time)
+Call Depart(id, gender)
+```
+
+
+#### main():
+```c
+Create array of pthread_t threads with size 20
+Create array of integers ids with size 20
+
+Schedule (i):
+    Print "Schedule (i): 5 : DELAY(10) : 5 : DELAY(10) : 5 : DELAY(10) : 5"
+    Create 5 threads for the first group with Arrive, UseFacilities, and Depart functions
+    Sleep for 10 seconds
+    Create 5 threads for the second group with Arrive, UseFacilities, and Depart functions
+    Sleep for 10 seconds
+    Create 5 threads for the third group with Arrive, UseFacilities, and Depart functions
+    Sleep for 10 seconds
+    Create 5 threads for the fourth group with Arrive, UseFacilities, and Depart functions
+Wait for all threads to finish
+
+Schedule (ii):
+    Print "Schedule (ii): 10 : DELAY(10) : 10"
+    Create 10 threads for the first group with Arrive, UseFacilities, and Depart functions
+    Sleep for 10 seconds
+    Create 10 threads for the second group with Arrive, UseFacilities, and Depart functions
+Wait for all threads to finish
+
+Schedule (iii):
+    Print "Schedule (iii): 20"
+    Create 20 threads for one group with Arrive, UseFacilities, and Depart functions
+Wait for all threads to finish
+```
