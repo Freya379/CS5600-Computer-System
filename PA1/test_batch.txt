@@ -1,0 +1,20 @@
+ls
+netstat -i;ls
+pwd;
+;; ls -l
+ls    ; pwd
+    ls ;   pwd;
+
+; cd PA1 cat Makefile ; grep problems README.txt;
+cd PA1 cat Makefile;          ; grep problems README.txt;
+cd PA1 cat Makefile;; ls -l ;
+cd PA1 cat Makefile; ls -x shell.dSYM;
+;;;;;;
+;;;;;;;;;;;;;;;;abc
+
+\lls\;
+cat non_existent_file;xyz;ls;netstat -i;
+pwd;quit;netstat -i;ls;pwd;
+exit
+echo "This is a test"
+
